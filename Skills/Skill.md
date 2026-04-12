@@ -1,62 +1,64 @@
 ---
-name: laravel-construction-qa
-description: 'Best practices for developing Construction Quality Assurance and Material Monitoring applications with Laravel 12.'
+name: laravel-construction-monitoring-j1
+description: 'Best practices for Construction QA platform using Laravel 12, Livewire, and Leaflet.js.'
 ---
 
-# Construction QA Platform Best Practices
+# Construction QA & Monitoring Best Practices (Module J1)
 
-Your goal is to help me write high-quality, maintainable, and robust Laravel 12 applications specifically for construction monitoring and material tracking.
+Your goal is to help me build a high-quality Construction Quality Assurance platform focusing on Soil Testing (J1 module) using Laravel 12, Livewire, and MySQL.
 
-## Project Setup & Architecture
+## Project Stack & Standards
 
-- **Framework Version:** Leverage Laravel 12 features, ensuring compatibility with PHP 8.2+.
-- **Database Engine:** Optimize for MySQL 8 (Production) and ensure seamless fallback to SQLite (Development/Testing).
-- **Architecture Pattern:** Use a **Service-Pattern** to decouple complex business logic (e.g., material calculations or GPS processing) from Controllers.
-- **Directory Structure:** Organize features by domain where possible. Keep `app/Services`, `app/Actions`, and `app/Repositories` clearly defined if the project scales.
+- **Backend:** Laravel 12 (PHP 8.2+).
+- **Frontend:** Livewire 3 with Blade Templates and Tailwind CSS.
+- **Maps:** Leaflet.js for GPS visualization and coordinate picking.
+- **Database:** MySQL 8 (Production) / SQLite (Testing). Follow the `J1_` prefix convention for soil-related tables.
+- **Naming Convention:** - **Models:** PascalCase (e.g., `J1JadwalTitikUji`).
+    - **Controllers/Livewire:** PascalCase with suffix (e.g., `InputTitikUji` component).
+    - **Services:** Append `Service` suffix for business logic classes.
 
-## Domain Specifics: Soil Testing & GPS (US 1.2)
+## Database & Data Integrity (US 1.2)
 
-- **Coordinate Precision:** Always use `decimal(10, 8)` for Latitude and `decimal(11, 8)` for Longitude in migrations to maintain sub-meter accuracy [1].
-- **Validation Rules:** Implement strict validation for GPS coordinates:
-  - Latitude: `required|numeric|between:-90,90`
-  - Longitude: `required|numeric|between:-180,180`
-- **Spatial Indexing:** Use MySQL `ST_PointFromText` or `Point` column types for high-performance location-based queries.
+- **GPS Storage:** In the `J1_Jadwal_Titik_Uji` table, use `decimal(10, 8)` for `latitude` and `decimal(11, 8)` for `longitude`.
+- **Relationships:**
+    - `Proyek` belongs to `Users` (Pemilik).
+    - `J1_Pengajuan_Uji_Tanah` belongs to `Proyek` and `Users` (Kontraktor).
+    - `J1_Jadwal_Titik_Uji` belongs to `J1_Pengajuan_Uji_Tanah` and `Users` (Petugas Lab).
+- **Mass Assignment:** Always define `$fillable` in Models to protect against mass assignment vulnerabilities.
 
-## Web Layer (Controllers & Requests)
+## Livewire & Web Layer
 
-- **Thin Controllers:** Controllers should only handle request input and return responses. Delegate all logic to Service classes.
-- **Form Requests:** Use dedicated Request classes (`php artisan make:request`) for all validation logic to keep controllers clean.
-- **Resource Classes:** Use **Eloquent Resources** for API responses to ensure a consistent data structure, especially for mobile-app integration.
-- **Error Handling:** Use Laravel’s global exception handler to return consistent JSON errors for AJAX/Mobile requests.
+- **Component Logic:** Use Livewire components for real-time validation of GPS inputs without page refreshes.
+- **Leaflet Integration:** - Initialize Leaflet maps within the `mounted()` lifecycle or via Alpine.js for better reactivity.
+    - Use `@js` directive to pass coordinate data from Livewire to Leaflet.
+- **Validation:** Use class-based validation rules.
+    ```php
+    #[Rule('required|numeric|between:-90,90')]
+    public $latitude;
+    ```
+- **Scenario Handling:** - **Success:** Dispatch browser events (`dispatch('toast-success')`) to notify the user.
+    - **Failure:** Display error messages using `@error` directives in Blade.
 
-## Service & Logic Layer
+## Service Layer & Business Logic
 
-- **Service Injection:** Inject services into controllers via the constructor for better testability.
-- **Type Hinting:** Strictly use PHP type hinting and return types for every method to prevent runtime errors.
-- **Transactions:** Wrap multi-step database operations (e.g., saving a soil test point and updating site status) within `DB::transaction()` to ensure data integrity [2].
+- **Encapsulation:** Logic for calculating Soil Test results (e.g., QC/FS values in `J1_Hasil_Sondir`) must reside in `app/Services/SoilTestService.php`.
+- **Transactions:** Use `DB::transaction` when creating a `J1_Jadwal_Titik_Uji` entry to ensure related project statuses are updated simultaneously [1].
 
-## Data Layer (Eloquent & Migrations)
+## UI/UX Standards (Construction Context)
 
-- **Strict Typing:** Use Laravel 12’s `$casts` property in Models to cast coordinates to `float` and timestamps to `datetime`.
-- **Mass Assignment:** Use `$fillable` instead of `$guarded` to explicitly define allowed fields.
-- **Relationships:** Define clear Eloquent relationships (e.g., `Site hasMany SoilTestPoints`). Always use Eager Loading (`with()`) to avoid N+1 query problems.
-- **Soft Deletes:** Implement `SoftDeletes` for all construction-related records to maintain an audit trail.
+- **Mobile First:** Since Field Officers (Petugas Lapangan) work on-site, ensure the Leaflet map and input forms are touch-friendly.
+- **Loading States:** Use `wire:loading` to provide visual feedback during coordinate submission.
+- **Error Feedback:** Explicitly handle Scenario 2 (Invalid GPS) by highlighting the map borders or showing "Out of Range" alerts.
 
-## Security & Authorization
+## Testing & QA
 
-- **Role-Based Access (RBAC):** Use **Laravel Policies** to authorize actions. For example, verify if a user is a "Petugas Lapangan" before allowing coordinate inputs.
-- **Middleware:** Protect sensitive monitoring routes using appropriate middleware.
-- **Data Sanitization:** Rely on Eloquent's built-in protection against SQL Injection. Sanitize any raw HTML input if used in material reports.
+- **Pest PHP:** Use Pest for testing User Stories.
+- **US 1.2 Test Case:** - Verify `Petugas Lapangan` can save coordinates.
+    - Verify `latitude` and `longitude` do not accept alphabetic strings.
+- **Database Refresh:** Use `RefreshDatabase` trait with SQLite for fast test execution.
 
-## Testing (TDD Approach)
+## Security & Access Control
 
-- **Testing Framework:** Use **Pest PHP** for an idiomatic and expressive testing experience.
-- **Scenario Testing:** Every User Story must have a corresponding Feature Test (e.g., `tests/Feature/SoilTestLocationTest.php`).
-- **Database Testing:** Use `RefreshDatabase` trait and execute tests against an in-memory SQLite database for maximum speed.
-- **Mocking:** Use `Storage::fake()` for material photo uploads and `Event::fake()` for monitoring alerts.
-
-## Code Quality & Logging
-
-- **Logging Context:** Include relevant context in logs (e.g., `Log::info('Soil point created', ['user_id' => $user->id, 'site_id' => $site->id]);`).
-- **PSR-12:** Adhere strictly to PSR-12 coding standards.
-- **Type Safety:** Use `declare(strict_types=1);` at the top of all PHP files.
+- **Role-Based Access (RBAC):** Use Laravel Gates/Policies based on the `role` column in the `Users` table.
+- **Policy Example:** Only users with `role == 'PetugasLab'` or `role == 'Teknisi'` can insert data into `J1_Jadwal_Titik_Uji`.
+- **Audit Trails:** Ensure `created_at` is always captured for every J1 submission.
