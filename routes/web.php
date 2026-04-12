@@ -3,13 +3,29 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SoilLocationController;
 
-Route::get('/', function () {
-    // Kita arahkan halaman utama langsung ke form input lokasi
-    // Angka 1 di sini adalah ID Soil Test (pastikan datanya ada di database)
-    return redirect()->route('locations.create', 1);
-});
+/*
+|--------------------------------------------------------------------------
+| Route Netral (Tanpa ID) - UNTUK DEVELOPMENT
+|--------------------------------------------------------------------------
+*/
 
-// Route untuk fitur US 1.2
+Route::get('/', [SoilLocationController::class, 'create'])->name('locations.create.simple');
+Route::get('/location/create', [SoilLocationController::class, 'create'])->name('locations.create.simple');
+Route::post('/location/store', [SoilLocationController::class, 'store'])->name('locations.store.simple');
+
+/*
+|--------------------------------------------------------------------------
+| Route Relational (Dengan SoilTest) - UNTUK PRODUCTION / DATA SUDAH ADA
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/soil-tests/{soilTest}/location/create', [SoilLocationController::class, 'create'])->name('locations.create');
 Route::post('/soil-tests/{soilTest}/location', [SoilLocationController::class, 'store'])->name('locations.store');
+
+/*
+|--------------------------------------------------------------------------
+| Show Location
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/locations/{location}', [SoilLocationController::class, 'show'])->name('locations.show');
