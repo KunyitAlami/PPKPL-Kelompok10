@@ -13,18 +13,23 @@
         </div>
         <div class="bg-gray-50 p-4 rounded-lg">
             <p class="text-gray-500 text-xs uppercase font-bold">Koordinat</p>
-            <p class="text-gray-900 font-medium">{{ $location->latitude }}, {{ $location->longitude }}</p>
+            <p class="text-gray-900 font-medium">
+                {{ $location->latitude }}, {{ $location->longitude }}
+            </p>
         </div>
         <div class="bg-gray-50 p-4 rounded-lg">
             <p class="text-gray-500 text-xs uppercase font-bold">Tanggal Pengujian</p>
-            <p class="text-gray-900 font-medium">{{ $location->tanggal_uji->format('d M Y') }}</p>
+            <p class="text-gray-900 font-medium">
+                {{ $location->tanggal_uji->format('d M Y') }}
+            </p>
         </div>
     </div>
 
-    <div id="map-show" class="w-full h-96 rounded-lg mb-6 border border-gray-300"></div>
+    <!-- MAP -->
+    <div id="map-show" style="height: 400px;" class="mb-6 border rounded-lg"></div>
 
-    <div class="flex justify-start space-x-4">
-        <a href="#" class="text-blue-600 hover:underline"> Kembali ke Daftar</a>
+    <div class="flex justify-start">
+        <a href="/" class="text-blue-600 hover:underline">Kembali ke Daftar</a>
     </div>
 </div>
 
@@ -32,16 +37,26 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-    const lat = {{ $location->latitude }};
-    const lng = {{ $location->longitude }};
-    
-    const mapShow = L.map('map-show').setView([lat, lng], 15);
+document.addEventListener("DOMContentLoaded", function () {
+
+    const lat = {{ $location->latitude ?? 0 }};
+    const lng = {{ $location->longitude ?? 0 }};
+
+    const map = L.map('map-show').setView([lat, lng], 15);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(mapShow);
+    }).addTo(map);
 
-    L.marker([lat, lng]).addTo(mapShow)
-        .bindPopup("Lokasi Titik Bor Tanah")
+    // marker
+    L.marker([lat, lng]).addTo(map)
+        .bindPopup("Lokasi Titik Uji")
         .openPopup();
+
+    // fix rendering
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 200);
+
+});
 </script>

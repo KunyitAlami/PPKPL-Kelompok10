@@ -1,38 +1,45 @@
 <div class="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
     <h2 class="text-2xl font-bold mb-4">Input Koordinat Titik Uji</h2>
-    
-    <form action="{{ route('locations.store', $soilTest->id) }}" method="POST">
+    @if ($errors->any())
+        <div style="color:red;">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+
+    <form action="{{ route('locations.store', $soilTest->id) }}" method="POST" onsubmit="return validateForm()">
         @csrf
-        <input type="hidden" name="petugas_lab_id" value="{{ auth()->id() }}">
+        {{-- <input type="hidden" name="petugas_lab_id" value="{{ auth()->id() }}"> --}}
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700">Latitude</label>
-                <input type="text" name="latitude" id="latitude" readonly
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 focus:ring-blue-500 focus:border-blue-500">
-                @error('latitude') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                <label>Latitude</label>
+                <input type="text" name="latitude" id="latitude" readonly class="border p-2 w-full bg-gray-100">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">Longitude</label>
-                <input type="text" name="longitude" id="longitude" readonly
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 focus:ring-blue-500 focus:border-blue-500">
-                @error('longitude') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                <label>Longitude</label>
+                <input type="text" name="longitude" id="longitude" readonly class="border p-2 w-full bg-gray-100">
             </div>
         </div>
 
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">Tanggal Uji</label>
-            <input type="date" name="tanggal_uji" value="{{ date('Y-m-d') }}"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <label>Tanggal Uji</label>
+            <input type="date" name="tanggal_uji" value="{{ date('Y-m-d') }}" class="border p-2 w-full">
         </div>
 
-        <div id="map" class="w-full h-96 rounded-lg mb-4 border border-gray-300"></div>
+        <p class="text-sm text-gray-500 mb-2">
+            Klik pada peta untuk memilih lokasi
+        </p>
 
-        <div class="flex justify-end">
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">
-                Simpan Lokasi
-            </button>
-        </div>
+        <div id="map" style="height: 400px;" class="mb-4 border"></div>
+
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
+            Simpan Lokasi
+        </button>
     </form>
 </div>
 
@@ -40,11 +47,17 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-    const map = L.map('map').setView([-3.316694, 114.590111], 13); // Default Banjarmasin
+document.addEventListener("DOMContentLoaded", function () {
+
+    const map = L.map('map').setView([-3.316694, 114.590111], 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
+
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 200);
 
     let marker;
 
@@ -58,7 +71,33 @@
         if (marker) {
             marker.setLatLng(e.latlng);
         } else {
-            marker = L.marker(e.latlng).addTo(map);
+            marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+
+            marker.on('dragend', function(ev) {
+                const pos = ev.target.getLatLng();
+                document.getElementById('latitude').value = pos.lat.toFixed(8);
+                document.getElementById('longitude').value = pos.lng.toFixed(8);
+            });
         }
+
+        marker.bindPopup(`Lat: ${lat}<br>Lng: ${lng}`).openPopup();
     });
+
+});
+
+function validateForm() {
+    const lat = document.getElementById('latitude').value;
+    const lng = document.getElementById('longitude').value;
+
+    if (!lat || !lng) {
+        alert("Silakan pilih lokasi di peta terlebih dahulu!");
+        return false;
+    }
+
+    const konfirmasi = confirm(
+        `Apakah lokasi ini sudah benar?\n\nLatitude: ${lat}\nLongitude: ${lng}`
+    );
+
+    return konfirmasi;
+}
 </script>

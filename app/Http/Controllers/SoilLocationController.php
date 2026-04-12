@@ -20,7 +20,11 @@ class SoilLocationController extends Controller
 
     public function store(StoreLocationRequest $request, SoilTestModel $soilTest, StoreSoilLocationAction $action): RedirectResponse
     {
-        $location = $action->execute($soilTest, $request->validated());
+        $data = $request->validated();
+
+        $data['petugas_lab_id'] = 1;
+
+        $location = $action->execute($soilTest, $data);
 
         return redirect()->route('locations.show', $location->id)
             ->with('success', 'Koordinat lokasi berhasil disimpan.');
