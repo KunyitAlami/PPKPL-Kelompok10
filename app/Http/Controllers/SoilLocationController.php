@@ -4,58 +4,62 @@ namespace App\Http\Controllers;
 
 use App\Actions\StoreSoilLocationAction;
 use App\Http\Requests\StoreLocationRequest;
-use App\Models\SoilLocationModel;
 use App\Models\SoilTestModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-
+use Illuminate\Support\Facades\Auth;
 
 class SoilLocationController extends Controller
 {
-    /**
-     * Tampilkan halaman input lokasi
-     * 
-     */
-    public function create(SoilTestModel $soilTest = null): View
+    public function index(): View
     {
-        $soilTest = $soilTest ?? SoilTestModel::first();
+        // 1. Data yang masih menunggu (Antrean)
+        $antrean = SoilTestModel::with('proyek')
+                        ->where('status', 'Menunggu Penjadwalan Lab')
+                        ->get();
 
-        return view('locations.create', compact('soilTest'));
+        // 2. Data yang sudah dijadwalkan (Bisa di-revert/edit)
+        $terjadwal = SoilTestModel::with(['proyek', 'location'])
+                        ->where('status', 'Terjadwal')
+                        ->get();
+                            
+        return view('lab.lokasi.index', compact('antrean', 'terjadwal'));
     }
 
-    /**
-     * Simpan lokasi
-     */
-    public function store(StoreLocationRequest $request, SoilTestModel $soilTest = null, StoreSoilLocationAction $action): RedirectResponse
+    public function create(SoilTestModel $soilTest): View
     {
+        return view('lab.lokasi.create', compact('soilTest'));
+    }
+
+    public function store(StoreLocationRequest $request, SoilTestModel $soilTest, StoreSoilLocationAction $action): RedirectResponse
+    {
+        // 1. Ambil data yang sudah lolos validasi ketat dari Request bawaanmu
         $data = $request->validated();
+        
+        // 2. Set ID Petugas Lab dari user yang sedang login
+        $data['petugas_lab_id'] = Auth::id();
 
-        $data['petugas_lab_id'] = 1;
+        // 3. Eksekusi penyimpanan dan update status menggunakan Action
+        $action->execute($soilTest, $data);
 
-
-        $soilTest = $soilTest ?? SoilTestModel::first();
-
-        if (!$soilTest) {
-            return back()->with('error', 'Data pengajuan belum ada, silakan buat dulu.');
-        }
-
-        $data['pengajuan_id'] = $request->pengajuan_id;
-
-        if (!$data['pengajuan_id']) {
-            return back()->with('error', 'Pengajuan tidak ditemukan.');
-        }
-
-        $location = SoilLocationModel::create($data);
-
-        return redirect()->route('locations.show', $location->id)
-            ->with('success', 'Koordinat lokasi berhasil disimpan.');
+        // 4. Kembali ke daftar jadwal lab
+        return redirect()->route('lab.lokasi.index')
+            ->with('success', 'Koordinat lokasi berhasil disimpan dan status menjadi Terjadwal.');
     }
-
+    
     /**
-     * Tampilkan detail lokasi
+     * Fitur Revert: Menghapus titik lokasi dan mengembalikan status ke 'Menunggu'
      */
-    public function show(SoilLocationModel $location): View
+    public function revert(SoilTestModel $soilTest): RedirectResponse
     {
-        return view('locations.show', compact('location'));
+        \DB::transaction(function () use ($soilTest) {
+            // Hapus data lokasi terkait
+            $soilTest->location()->delete();
+
+            // Kembalikan status ke awal
+            $soilTest->update(['status' => 'Menunggu Penjadwalan Lab']);
+        });
+
+        return back()->with('success', 'Jadwal telah dibatalkan dan dikembalikan ke antrean.');
     }
 }
