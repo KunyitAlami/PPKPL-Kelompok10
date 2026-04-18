@@ -12,7 +12,7 @@ Sebagai Petugas Lab, saya ingin mengunggah sertifikat hasil pengujian tanah agar
   - `resources/views/certificates/upload.blade.php` — Upload form interface
 
 • **Skills:**
-  - `skills/skill.md` — Laravel 11 patterns (Actions, Thin Controllers, Object Storage, Atomic Transactions)
+  - `skills/skill.md` — Laravel 12 patterns (Actions, Thin Controllers, Object Storage, Atomic Transactions)
 
 • **Task:** Implement the full certificate upload flow for US 1.4:
   1. Laboratory Officer selects a completed Soil Test record.
