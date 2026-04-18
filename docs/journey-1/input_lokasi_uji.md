@@ -12,7 +12,7 @@
   - `resources/views/locations/show.blade.php` — Detail view with map marker
 
 • **Skills:**
-  - `skills/skill.md` — Laravel 11 patterns (Actions, Thin Controllers, Form Requests, Precision Decimals)
+  - `skills/skill.md` — Laravel 12 patterns (Actions, Thin Controllers, Form Requests, Precision Decimals)
 
 • **Task:** Implement the full GPS coordinate input flow for US 1.2:
   1. Officer enters the Soil Test detail page.
