@@ -12,7 +12,7 @@ Sebagai Teknisi Lapangan, saya ingin menginput nilai daya dukung tanah hasil uji
   - `resources/views/results/create.blade.php` — Input form for technical soil parameters
 
 • **Skills:**
-  - `skills/skill.md` — Laravel 11 patterns (Actions, Thin Controllers, Form Requests, Precision Decimals)
+  - `skills/skill.md` — Laravel 12 patterns (Actions, Thin Controllers, Form Requests, Precision Decimals)
 
 • **Task:** Implement the full soil bearing capacity input flow for US 1.3:
   1. Field Technician enters the "Input Hasil Uji" page.
