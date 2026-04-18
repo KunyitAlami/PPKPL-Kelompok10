@@ -10,8 +10,9 @@ return new class extends Migration
     {
         Schema::create('j1_pengajuan_uji_tanah', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('proyek_id')->constrained('proyek');
-            $table->foreignId('kontraktor_id')->constrained('users');
+            // Baris ini yang akan membuat kolom proyek_id
+            $table->foreignId('proyek_id')->constrained('proyek')->cascadeOnDelete();
+            $table->foreignId('kontraktor_id')->constrained('users')->cascadeOnDelete();
             $table->string('jenis_pengujian');
             $table->string('status');
             $table->timestamps();

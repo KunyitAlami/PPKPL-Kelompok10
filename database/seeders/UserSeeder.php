@@ -10,21 +10,53 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        // 1. Admin
         User::firstOrCreate(
-            ['email' => 'petugas@example.com'],
+            ['email' => 'admin@example.com'],
             [
-                'nama' => 'Petugas Lab',
+                'nama' => 'Administrator',
+                'password' => Hash::make('password'),
+                'role' => 'admin'
+            ]
+        );
+
+        // 2. Petugas Lab (Actor: Petugas Lab Tanah)
+        User::firstOrCreate(
+            ['email' => 'lab@example.com'],
+            [
+                'nama' => 'Petugas Lab Tanah',
                 'password' => Hash::make('password'),
                 'role' => 'PetugasLab'
             ]
         );
 
+        // 3. Kontraktor (Actor: Kontraktor)
         User::firstOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'kontraktor@example.com'],
             [
-                'nama' => 'Admin',
+                'nama' => 'Budi Kontraktor',
                 'password' => Hash::make('password'),
-                'role' => 'admin'
+                'role' => 'Kontraktor'
+            ]
+        );
+
+        // 4. Teknisi Lapangan (Actor: Teknisi Lapangan untuk US 1.3)
+        User::firstOrCreate(
+            ['email' => 'teknisi@example.com'],
+            [
+                'nama' => 'Andi Teknisi',
+                'password' => Hash::make('password'),
+                'role' => 'TeknisiLapangan'
+            ]
+        );
+
+        // 5. Pemilik Rumah (Actor: Pemilik Rumah untuk US 1.5)
+        User::firstOrCreate(
+            ['email' => 'pemilik@example.com'],
+            [
+                'nama' => 'Siti Pemilik Rumah',
+                'password' => Hash::make('password'),
+                'role' => 'PemilikRumah'
             ]
         );
     }
