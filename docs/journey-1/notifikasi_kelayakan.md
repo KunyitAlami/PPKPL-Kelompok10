@@ -4,7 +4,7 @@
 Sebagai Pemilik Rumah, saya ingin menerima notifikasi hasil kelayakan fondasi berdasarkan uji tanah agar saya dapat mengetahui tingkat keamanan konstruksi rumah saya sebelum dilanjutkan.
 
 • **Context File:**
-  - `app/Models/SoilTest.php` — Parent model for soil testing record
+  - `app/Models/SoilTestModel.php` — Parent model for soil testing record
   - `app/Models/FoundationEligibility.php` — Model for final eligibility status
   - `app/Notifications/FoundationStatusNotification.php` — Laravel Notification class
   - `app/Http/Controllers/NotificationController.php` — Controller for managing alerts
