@@ -4,7 +4,7 @@
 Sebagai Petugas Lab, saya ingin mengunggah sertifikat hasil pengujian tanah agar hasil uji memiliki bukti resmi yang valid dan dapat diverifikasi oleh pihak terkait.
 
 • **Context File:**
-  - `app/Models/SoilTest.php` — Parent model for soil testing record
+  - `app/Models/SoilTestModel.php` — Parent model for soil testing record
   - `app/Models/SoilCertificate.php` — Model for storing certificate metadata
   - `app/Actions/UploadSoilCertificateAction.php` — Business logic for MinIO S3 upload
   - `app/Http/Controllers/SoilCertificateController.php` — Thin controller for certificate flow
