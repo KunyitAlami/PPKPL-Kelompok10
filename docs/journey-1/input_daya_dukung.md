@@ -4,9 +4,9 @@
 Sebagai Teknisi Lapangan, saya ingin menginput nilai daya dukung tanah hasil uji sondir agar sistem dapat mengevaluasi kekuatan tanah sebagai dasar perancangan fondasi.
 
 • **Context File:**
-  - `app/Models/SoilTest.php` — Parent model for soil testing record
+  - `app/Models/SoilTestModel.php` — Parent model for soil testing record
   - `app/Models/SoilResult.php` — Model for sondir test data (QC and FS values)
-  - `app/Actions/StoreSoilBearingCapacityAction.php` — Business logic for processing test results
+  - `app/Actions/StoreSoilLocationAction.php` — Business logic for processing test results
   - `app/Http/Controllers/SoilResultController.php` — Thin controller for technical results flow
   - `app/Http/Requests/StoreSoilResultRequest.php` — Validation rules for numerical soil data
   - `resources/views/results/create.blade.php` — Input form for technical soil parameters
