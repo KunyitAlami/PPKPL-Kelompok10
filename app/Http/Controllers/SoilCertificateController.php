@@ -26,7 +26,7 @@ class SoilCertificateController extends Controller
 
         $file = $request->file('sertifikat_uji');
 
-        $path = $file->store('certificates', 's3');
+        $path = $file->store('certificates', 'public');
 
         SoilCertificate::create([
             'pengajuan_uji_tanah_id' => $soilTest->id,
