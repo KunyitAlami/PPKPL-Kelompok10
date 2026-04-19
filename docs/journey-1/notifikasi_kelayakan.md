@@ -45,7 +45,7 @@ Sebagai Pemilik Rumah, saya ingin menerima notifikasi hasil kelayakan fondasi be
   - **MOD** `routes/web.php` — Added notification routes for laboratory and owners
 
 • **Commit Message:** feat(notification): implement US 1.5 foundation eligibility alerts for homeowners
-    - Add FoundationStatusNotification for real-time safety updates
-    - Implement notification trigger logic in NotificationController
-    - Add status completion check before sending alerts
-    - Setup homeowner notification dashboard view
+- Add FoundationStatusNotification for real-time safety updates
+- Implement notification trigger logic in NotificationController
+- Add status completion check before sending alerts
+- Setup homeowner notification dashboard view
