@@ -5,9 +5,9 @@ Sebagai Teknisi Lapangan, saya ingin menginput nilai daya dukung tanah hasil uji
 
 • **Context File:**
   - `app/Models/SoilTestModel.php` — Parent model for soil testing record
-  - `app/Models/SoilResult.php` — Model for sondir test data (QC and FS values)
+  - `app/Models/HasilSondirModel.php` — Model for sondir test data (QC and FS values)
   - `app/Actions/StoreSoilLocationAction.php` — Business logic for processing test results
-  - `app/Http/Controllers/SoilResultController.php` — Thin controller for technical results flow
+  - `app/Http/Controllers/TeknisiSondirController.php` — Thin controller for technical results flow
   - `app/Http/Requests/StoreSoilResultRequest.php` — Validation rules for numerical soil data
   - `resources/views/results/create.blade.php` — Input form for technical soil parameters
 
