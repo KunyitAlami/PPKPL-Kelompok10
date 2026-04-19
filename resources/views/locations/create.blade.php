@@ -1,8 +1,30 @@
-<div class="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
-    <h2 class="text-2xl font-bold mb-4">Input Koordinat Titik Uji</h2>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Input Koordinat Titik Uji</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+
+<body class="bg-gray-100 font-sans p-6">
+
+<div class="max-w-4xl mx-auto bg-white border rounded-xl shadow-sm p-6">
+
+    <!-- Title -->
+    <h2 class="text-xl font-bold mb-4">
+        Input Koordinat Titik Uji
+    </h2>
+
+    <!-- Error -->
     @if ($errors->any())
-        <div style="color:red;">
-            <ul>
+        <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+            <ul class="list-disc list-inside text-sm">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -10,40 +32,68 @@
         </div>
     @endif
 
-
-    <form action="{{ route('lokasi.store', $soilTest->id) }}" method="POST" onsubmit="return validateForm()">
+    <form action="{{ route('lokasi.store', $soilTest->id) }}" 
+          method="POST" 
+          onsubmit="return validateForm()"
+          class="space-y-4">
         @csrf
+
         <input type="hidden" name="pengajuan_id" value="{{ $soilTest->id ?? '' }}">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+
+        <!-- Lat & Lng -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label>Latitude</label>
-                <input type="text" name="latitude" id="latitude" readonly class="border p-2 w-full bg-gray-100">
+                <label class="block text-sm font-medium mb-1">Latitude</label>
+                <input 
+                    type="text" 
+                    name="latitude" 
+                    id="latitude" 
+                    readonly
+                    class="w-full border rounded-lg px-3 py-2 bg-gray-100"
+                >
             </div>
+
             <div>
-                <label>Longitude</label>
-                <input type="text" name="longitude" id="longitude" readonly class="border p-2 w-full bg-gray-100">
+                <label class="block text-sm font-medium mb-1">Longitude</label>
+                <input 
+                    type="text" 
+                    name="longitude" 
+                    id="longitude" 
+                    readonly
+                    class="w-full border rounded-lg px-3 py-2 bg-gray-100"
+                >
             </div>
         </div>
 
-        <div class="mb-4">
-            <label>Tanggal Uji</label>
-            <input type="date" name="tanggal_uji" value="{{ date('Y-m-d') }}" class="border p-2 w-full">
+        <!-- Tanggal -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Tanggal Uji</label>
+            <input 
+                type="date" 
+                name="tanggal_uji" 
+                value="{{ date('Y-m-d') }}"
+                class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
+            >
         </div>
 
-        <p class="text-sm text-gray-500 mb-2">
+        <!-- Info -->
+        <p class="text-sm text-gray-500">
             Klik pada peta untuk memilih lokasi
         </p>
 
-        <div id="map" style="height: 400px;" class="mb-4 border"></div>
+        <!-- Map -->
+        <div id="map" class="h-96 w-full border rounded-lg"></div>
 
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
+        <!-- Button -->
+        <button 
+            type="submit"
+            class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition">
             Simpan Lokasi
         </button>
-    </form>
-</div>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    </form>
+
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -93,10 +143,11 @@ function validateForm() {
         return false;
     }
 
-    const konfirmasi = confirm(
+    return confirm(
         `Apakah lokasi ini sudah benar?\n\nLatitude: ${lat}\nLongitude: ${lng}`
     );
-
-    return konfirmasi;
 }
 </script>
+
+</body>
+</html>

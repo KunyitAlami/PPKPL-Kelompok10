@@ -5,50 +5,99 @@
     <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body style="font-family: Arial, sans-serif; padding: 20px;">
-    <h1>Selamat Datang, {{ auth()->user()->nama }}</h1>
-    <p>Role Anda saat ini adalah: <strong>{{ auth()->user()->role }}</strong></p>
+<body class="bg-gray-100 text-gray-800 font-sans">
 
+<div class="max-w-5xl mx-auto p-6">
+
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold">
+            Selamat Datang, {{ auth()->user()->nama }}
+        </h1>
+        <p class="text-gray-600">
+            Role Anda:
+            <span class="font-semibold text-blue-600">
+                {{ auth()->user()->role }}
+            </span>
+        </p>
+    </div>
+
+    <!-- Kontraktor -->
     @if(auth()->user()->role === 'Kontraktor')
-        <div style="margin: 20px 0; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9;">
-            <h3>Menu Kontraktor</h3>
-            <p>Silakan ajukan jadwal uji tanah untuk proyek Anda di sini:</p>
-            <a href="{{ route('pengajuan.index') }}" style="display: inline-block; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Kelola Pengajuan Uji Tanah</a>
-        </div>
+    <div class="bg-white border rounded-xl shadow-sm p-5 mb-5">
+        <h3 class="text-lg font-semibold mb-2">Menu Kontraktor</h3>
+        <p class="text-gray-600 mb-4">
+            Silakan ajukan jadwal uji tanah untuk proyek Anda di sini:
+        </p>
+        <a href="{{ route('pengajuan.index') }}"
+           class="inline-block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+            Kelola Pengajuan Uji Tanah
+        </a>
+    </div>
     @endif
 
+    <!-- Petugas Lab -->
     @if(auth()->user()->role === 'PetugasLab')
-        <div style="margin: 20px 0; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9;">
-            <h3>Menu Petugas Lab</h3>
-            <p>Silakan uploud sertifikat untuk hasil pengujian tanah:</p>
-            <a href="{{ route('lab.lokasi.index') }}" style="display: inline-block; padding: 10px 15px; background-color: #17a2b8; color: white; text-decoration: none; border-radius: 5px;">Cek hasil pengujian dan uploud sertifikat</a>
-        </div>
+    <div class="bg-white border rounded-xl shadow-sm p-5 mb-5">
+        <h3 class="text-lg font-semibold mb-2">Menu Petugas Lab</h3>
+        <p class="text-gray-600 mb-4">
+            Silakan upload sertifikat hasil pengujian tanah:
+        </p>
+        <a href="{{ route('lab.lokasi.index') }}"
+           class="inline-block px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition">
+            Cek Hasil & Upload Sertifikat
+        </a>
+    </div>
     @endif
 
+    <!-- Teknisi -->
     @if(auth()->user()->role === 'TeknisiLapangan')
-        <div style="margin: 20px 0; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9;">
-            <h3>Menu Teknisi Lapangan</h3>
-            <p>Silakan input data hasil uji sondir lapangan di sini:</p>
-            <a href="{{ route('teknisi.sondir.index') }}" style="display: inline-block; padding: 10px 15px; background-color: #ffc107; color: black; text-decoration: none; border-radius: 5px;">Input Hasil Sondir</a>
-        </div>
+    <div class="bg-white border rounded-xl shadow-sm p-5 mb-5">
+        <h3 class="text-lg font-semibold mb-2">Menu Teknisi Lapangan</h3>
+        <p class="text-gray-600 mb-4">
+            Input data hasil uji sondir lapangan:
+        </p>
+        <a href="{{ route('teknisi.sondir.index') }}"
+           class="inline-block px-4 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 transition">
+            Input Hasil Sondir
+        </a>
+    </div>
     @endif
 
+    <!-- Petugas Lapangan -->
     @if(auth()->user()->role === 'PetugasLapangan')
-        <div style="margin: 20px 0; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9;">
-            <h3>Menu Petugas Lapangan</h3>
-            <p>Cek jadwal yang diajukan oleh Kontraktor untuk Menginputkan Lokasi Berbasis GPS</p>
-            <a href="{{ route('lokasi.index') }}" style="display: inline-block; padding: 10px 15px; background-color: #ffc107; color: black; text-decoration: none; border-radius: 5px;">Cek Jadwal Pengajuan</a>
-        </div>
+    <div class="bg-white border rounded-xl shadow-sm p-5 mb-5">
+        <h3 class="text-lg font-semibold mb-2">Menu Petugas Lapangan</h3>
+        <p class="text-gray-600 mb-4">
+            Cek jadwal pengajuan dan input lokasi berbasis GPS:
+        </p>
+        <a href="{{ route('lokasi.index') }}"
+           class="inline-block px-4 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 transition">
+            Cek Jadwal Pengajuan
+        </a>
+    </div>
     @endif
+
+    <!-- Pemilik Rumah -->
     @if(auth()->user()->role === 'PemilikRumah')
-        <a href="{{ route('notifications.index') }}" style="display: inline-block; padding: 10px 15px; background-color: #ffc107; color: black; text-decoration: none; border-radius: 5px;">
+    <div class="bg-white border rounded-xl shadow-sm p-5 mb-5">
+        <a href="{{ route('notifications.index') }}"
+           class="inline-block px-4 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 transition">
             Lihat Notifikasi Kelayakan Fondasi
         </a>
+    </div>
     @endif
 
-    <form method="POST" action="{{ route('logout') }}" style="margin-top: 20px;">
+    <!-- Logout -->
+    <form method="POST" action="{{ route('logout') }}" class="mt-6">
         @csrf
-        <button type="submit" style="padding: 8px 15px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">Logout</button>
+        <button type="submit"
+            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+            Logout
+        </button>
     </form>
+
+</div>
+
 </body>
 </html>

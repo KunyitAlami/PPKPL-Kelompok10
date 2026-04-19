@@ -1,106 +1,171 @@
-<div style="padding: 20px; font-family: Arial, sans-serif;">
-    <h2>Input Koordinat GPS untuk Pengajuan #{{ $soilTest->id }}</h2>
-    <a href="{{ route('lab.lokasi.index') }}" style="text-decoration: none; margin-bottom: 15px; display: inline-block;">&larr; Batal & Kembali</a>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Input Lokasi GPS</title>
 
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
 
-    <div style="margin-bottom: 15px;">
-        <label><strong>Pilih Titik di Peta:</strong></label>
-        <p style="font-size: 12px; color: #666; margin: 5px 0;">Klik pada peta untuk menentukan koordinat otomatis.</p>
-        <div id="map" style="height: 350px; width: 100%; max-width: 600px; border: 1px solid #ccc; border-radius: 5px;"></div>
+<body class="bg-gray-100 font-sans p-6">
+
+<div class="max-w-3xl mx-auto bg-white border rounded-xl shadow-sm p-6">
+
+    <!-- Header -->
+    <h2 class="text-lg font-semibold mb-2">
+        Input Koordinat GPS
+    </h2>
+    <p class="text-sm text-gray-600 mb-4">
+        Pengajuan #{{ $soilTest->id }}
+    </p>
+
+    <a href="{{ route('lab.lokasi.index') }}"
+       class="inline-block text-blue-500 text-sm hover:underline mb-4">
+        ← Kembali
+    </a>
+
+    <!-- Map Section -->
+    <div class="mb-5">
+        <label class="block text-sm font-medium mb-1">
+            Pilih Titik di Peta
+        </label>
+        <p class="text-xs text-gray-500 mb-2">
+            Klik pada peta untuk menentukan koordinat otomatis.
+        </p>
+
+        <div id="map" class="h-80 w-full rounded-lg border"></div>
     </div>
 
-    <button type="button" id="btn-revert" style="padding: 6px 12px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 15px;">
-        &#x21BA; Revert / Hapus Titik
+    <!-- Revert Button -->
+    <button type="button" id="btn-revert"
+        class="mb-5 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+        ↺ Hapus Titik
     </button>
-{{-- 
-    {{ dd($soilTest) }} --}}
-    {{-- <form action="{{ route('lab.lokasi.store', $soilTest->id) }}" method="POST"> --}}
-    <form action="{{ route('locations.store.simple') }}" method="POST">
+
+    <!-- Form -->
+    <form action="{{ route('locations.store.simple') }}" method="POST" class="space-y-4">
         @csrf
-        <div style="margin-bottom: 10px;">
-            <label>Latitude:</label><br>
-            <input type="number" step="any" id="input-lat" name="latitude" required style="width: 300px; padding: 5px;" placeholder="Contoh: -3.316694">
+
+        <!-- Latitude -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Latitude</label>
+            <input 
+                type="number" 
+                step="any" 
+                id="input-lat" 
+                name="latitude" 
+                required
+                placeholder="-3.316694"
+                class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
         </div>
-        <div style="margin-bottom: 10px;">
-            <label>Longitude:</label><br>
-            <input type="number" step="any" id="input-lng" name="longitude" required style="width: 300px; padding: 5px;" placeholder="Contoh: 114.590111">
+
+        <!-- Longitude -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Longitude</label>
+            <input 
+                type="number" 
+                step="any" 
+                id="input-lng" 
+                name="longitude" 
+                required
+                placeholder="114.590111"
+                class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
         </div>
-        <div style="margin-bottom: 15px;">
-            <label>Tanggal Uji Pasti:</label><br>
-            <input type="date" name="tanggal_uji" required style="width: 300px; padding: 5px;">
+
+        <!-- Tanggal -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Tanggal Uji</label>
+            <input 
+                type="date" 
+                name="tanggal_uji" 
+                required
+                class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
         </div>
-        
-        <button type="submit" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px;">Simpan Lokasi & Jadwal</button>
+
+        <!-- Button -->
+        <button 
+            type="submit"
+            class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition">
+            Simpan Lokasi & Jadwal
+        </button>
+
     </form>
+
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Karena kamu di area Kalimantan Selatan (Banjarmasin), kita jadikan ini titik tengah default petanya
-        var centerLat = -3.316694; 
-        var centerLng = 114.590111;
+document.addEventListener('DOMContentLoaded', function() {
 
-        // Inisialisasi peta
-        var map = L.map('map').setView([centerLat, centerLng], 13);
+    var centerLat = -3.316694;
+    var centerLng = 114.590111;
 
-        // Load layer peta dari OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+    var map = L.map('map').setView([centerLat, centerLng], 13);
 
-        var marker = null; // Variabel untuk menyimpan pin point
-        
-        var inputLat = document.getElementById('input-lat');
-        var inputLng = document.getElementById('input-lng');
-        var btnRevert = document.getElementById('btn-revert');
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
-        // FUNGSI 1: Jika Peta di-klik
-        map.on('click', function(e) {
-            var lat = e.latlng.lat;
-            var lng = e.latlng.lng;
+    var marker = null;
 
-            // Masukkan nilai ke form input
-            inputLat.value = lat;
-            inputLng.value = lng;
+    var inputLat = document.getElementById('input-lat');
+    var inputLng = document.getElementById('input-lng');
+    var btnRevert = document.getElementById('btn-revert');
 
-            // Taruh/Pindahkan marker (tanda)
-            if (marker) {
-                marker.setLatLng(e.latlng); // Geser marker jika sudah ada
-            } else {
-                marker = L.marker(e.latlng).addTo(map); // Buat marker baru
-            }
-        });
+    // Klik map
+    map.on('click', function(e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
 
-        // FUNGSI 2: Jika User mengetik angka manual di form, peta ikut update
-        function updateMapFromInput() {
-            var lat = parseFloat(inputLat.value);
-            var lng = parseFloat(inputLng.value);
+        inputLat.value = lat;
+        inputLng.value = lng;
 
-            if (!isNaN(lat) && !isNaN(lng)) {
-                var newPos = new L.LatLng(lat, lng);
-                if (marker) {
-                    marker.setLatLng(newPos);
-                } else {
-                    marker = L.marker(newPos).addTo(map);
-                }
-                map.panTo(newPos); // Arahkan kamera peta ke titik baru
-            }
+        if (marker) {
+            marker.setLatLng(e.latlng);
+        } else {
+            marker = L.marker(e.latlng).addTo(map);
         }
-        inputLat.addEventListener('input', updateMapFromInput);
-        inputLng.addEventListener('input', updateMapFromInput);
-
-        // FUNGSI 3: Revert / Hapus Titik
-        btnRevert.addEventListener('click', function() {
-            if (marker) {
-                map.removeLayer(marker); // Hapus pin dari peta
-                marker = null;
-            }
-            // Kosongkan form
-            inputLat.value = '';
-            inputLng.value = '';
-        });
     });
+
+    // Input manual update map
+    function updateMapFromInput() {
+        var lat = parseFloat(inputLat.value);
+        var lng = parseFloat(inputLng.value);
+
+        if (!isNaN(lat) && !isNaN(lng)) {
+            var newPos = new L.LatLng(lat, lng);
+            if (marker) {
+                marker.setLatLng(newPos);
+            } else {
+                marker = L.marker(newPos).addTo(map);
+            }
+            map.panTo(newPos);
+        }
+    }
+
+    inputLat.addEventListener('input', updateMapFromInput);
+    inputLng.addEventListener('input', updateMapFromInput);
+
+    // Revert
+    btnRevert.addEventListener('click', function() {
+        if (marker) {
+            map.removeLayer(marker);
+            marker = null;
+        }
+        inputLat.value = '';
+        inputLng.value = '';
+    });
+
+});
 </script>
+
+</body>
+</html>
