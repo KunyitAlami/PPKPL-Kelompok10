@@ -5,6 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SoilLocationController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\TeknisiSondirController;
+use App\Http\Controllers\SoilCertificateController;
+use App\Http\Controllers\PetugasLapanganController;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +35,10 @@ Route::get('/dashboard', function () {
 | Route Netral (Tanpa ID) - UNTUK DEVELOPMENT
 |--------------------------------------------------------------------------
 */
-Route::get('/', [SoilLocationController::class, 'create'])->name('home');
+// Route::get('/', [SoilLocationController::class, 'create'])->name('home');
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 Route::get('/location/create', [SoilLocationController::class, 'create'])->name('locations.create.simple');
 Route::post('/location/store', [SoilLocationController::class, 'store'])->name('locations.store.simple');
 
@@ -51,13 +57,42 @@ Route::middleware('auth')->group(function () {
         Route::get('/pengajuan/buat', [PengajuanController::class, 'create'])->name('pengajuan.create');
         Route::post('/pengajuan/simpan', [PengajuanController::class, 'store'])->name('pengajuan.store');
     });
-    
-    // US 1.2: Rute untuk Petugas Lab
+
+    // US 1.2 Pengajuan input lokasi petugas lapangan
+    Route::prefix('petugas_lapangan')->group(function () {
+
+        Route::get('/lokasi', [PetugasLapanganController::class, 'index'])->name('lokasi.index');
+
+        Route::get('/lokasi/{soilTest}/buat', [PetugasLapanganController::class, 'create'])->name('lokasi.create');
+
+        Route::post('/lokasi/{soilTest}/simpan', [PetugasLapanganController::class, 'store'])->name('lokasi.store');
+
+    });
+        
+
     Route::prefix('lab')->group(function () {
-        Route::get('/penjadwalan', [SoilLocationController::class, 'index'])->name('lab.lokasi.index');
-        Route::get('/penjadwalan/{soilTest}/buat', [SoilLocationController::class, 'create'])->name('lab.lokasi.create');
-        Route::post('/penjadwalan/{soilTest}/simpan', [SoilLocationController::class, 'store'])->name('lab.lokasi.store');
-        Route::delete('/penjadwalan/{soilTest}/revert', [SoilLocationController::class, 'revert'])->name('lab.lokasi.revert');
+
+        // ================= US 1.2 =================
+        Route::get('/penjadwalan', [SoilLocationController::class, 'index'])
+            ->name('lab.lokasi.index');
+
+        Route::get('/penjadwalan/{soilTest}/buat', [SoilLocationController::class, 'create'])
+            ->name('lab.lokasi.create');
+
+        Route::post('/penjadwalan/{soilTest}/simpan', [SoilLocationController::class, 'store'])
+            ->name('lab.lokasi.store');
+
+        Route::delete('/penjadwalan/{soilTest}/revert', [SoilLocationController::class, 'revert'])
+            ->name('lab.lokasi.revert');
+
+
+        // ================= US 1.4 =================
+        Route::get('/certificate/{soilTest}/upload', [SoilCertificateController::class, 'create'])
+            ->name('lab.certificate.create');
+
+        Route::post('/certificate/{soilTest}/upload', [SoilCertificateController::class, 'store'])
+            ->name('lab.certificate.store');
+
     });
 
     // US 1.3: Rute untuk Teknisi Lapangan
@@ -69,4 +104,13 @@ Route::middleware('auth')->group(function () {
         Route::delete('/sondir/{hasil}/revert', [TeknisiSondirController::class, 'revert'])->name('teknisi.sondir.revert');
     });
 
+    Route::prefix('pemilik')->middleware('auth')->group(function () {
+        // kirim dari lab
+        Route::post('/lab/notify/{soilTest}', [NotificationController::class, 'send'])
+            ->name('lab.notify');
+
+        // lihat oleh pemilik
+        Route::get('/notifications', [NotificationController::class, 'index'])
+            ->name('notifications.index');
+    });
 });

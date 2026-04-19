@@ -12,4 +12,9 @@ class PengajuanUji extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
+
+    public function certificate()
+    {
+        return $this->hasOne(SoilCertificate::class, 'pengajuan_uji_tanah_id');
+    }
 }

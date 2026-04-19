@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body style="font-family: Arial, sans-serif; padding: 20px;">
     <h1>Selamat Datang, {{ auth()->user()->nama }}</h1>
@@ -19,8 +20,8 @@
     @if(auth()->user()->role === 'PetugasLab')
         <div style="margin: 20px 0; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9;">
             <h3>Menu Petugas Lab</h3>
-            <p>Silakan jadwalkan dan tentukan titik GPS uji tanah di sini:</p>
-            <a href="{{ route('lab.lokasi.index') }}" style="display: inline-block; padding: 10px 15px; background-color: #17a2b8; color: white; text-decoration: none; border-radius: 5px;">Kelola Jadwal & Lokasi Uji</a>
+            <p>Silakan uploud sertifikat untuk hasil pengujian tanah:</p>
+            <a href="{{ route('lab.lokasi.index') }}" style="display: inline-block; padding: 10px 15px; background-color: #17a2b8; color: white; text-decoration: none; border-radius: 5px;">Cek hasil pengujian dan uploud sertifikat</a>
         </div>
     @endif
 
@@ -30,6 +31,19 @@
             <p>Silakan input data hasil uji sondir lapangan di sini:</p>
             <a href="{{ route('teknisi.sondir.index') }}" style="display: inline-block; padding: 10px 15px; background-color: #ffc107; color: black; text-decoration: none; border-radius: 5px;">Input Hasil Sondir</a>
         </div>
+    @endif
+
+    @if(auth()->user()->role === 'PetugasLapangan')
+        <div style="margin: 20px 0; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9;">
+            <h3>Menu Petugas Lapangan</h3>
+            <p>Cek jadwal yang diajukan oleh Kontraktor untuk Menginputkan Lokasi Berbasis GPS</p>
+            <a href="{{ route('lokasi.index') }}" style="display: inline-block; padding: 10px 15px; background-color: #ffc107; color: black; text-decoration: none; border-radius: 5px;">Cek Jadwal Pengajuan</a>
+        </div>
+    @endif
+    @if(auth()->user()->role === 'PemilikRumah')
+        <a href="{{ route('notifications.index') }}" style="display: inline-block; padding: 10px 15px; background-color: #ffc107; color: black; text-decoration: none; border-radius: 5px;">
+            Lihat Notifikasi Kelayakan Fondasi
+        </a>
     @endif
 
     <form method="POST" action="{{ route('logout') }}" style="margin-top: 20px;">

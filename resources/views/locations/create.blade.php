@@ -11,7 +11,7 @@
     @endif
 
 
-    <form action="{{ route('locations.store.simple') }}" method="POST" onsubmit="return validateForm()">
+    <form action="{{ route('lokasi.store', $soilTest->id) }}" method="POST" onsubmit="return validateForm()">
         @csrf
         <input type="hidden" name="pengajuan_id" value="{{ $soilTest->id ?? '' }}">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

@@ -59,5 +59,15 @@ class UserSeeder extends Seeder
                 'role' => 'PemilikRumah'
             ]
         );
+
+        // 6. Petugas Lapangan (Actor: Petugas Lapangan untuk US 1.2)
+        User::firstOrCreate(
+            ['email' => 'petugas@example.com'],
+            [
+                'nama' => 'Ahmad Petugas Lapangan',
+                'password' => Hash::make('password'),
+                'role' => 'PetugasLapangan'
+            ]
+        );
     }
 }

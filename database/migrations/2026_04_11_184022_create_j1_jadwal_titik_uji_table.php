@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('j1_jadwal_titik_uji', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pengajuan_id')->constrained('j1_pengajuan_uji_tanah');
-            $table->foreignId('petugas_lab_id')->constrained('users');
+            $table->foreignId('petugas_lapangan_id')->constrained('users');
             $table->decimal('latitude', 11, 8);
             $table->decimal('longitude', 11, 8);
             $table->date('tanggal_uji');

@@ -14,8 +14,10 @@
     <button type="button" id="btn-revert" style="padding: 6px 12px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 15px;">
         &#x21BA; Revert / Hapus Titik
     </button>
-
-    <form action="{{ route('lab.lokasi.store', $soilTest->id) }}" method="POST">
+{{-- 
+    {{ dd($soilTest) }} --}}
+    {{-- <form action="{{ route('lab.lokasi.store', $soilTest->id) }}" method="POST"> --}}
+    <form action="{{ route('locations.store.simple') }}" method="POST">
         @csrf
         <div style="margin-bottom: 10px;">
             <label>Latitude:</label><br>

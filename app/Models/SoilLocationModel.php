@@ -11,7 +11,7 @@ class SoilLocationModel extends Model
 
     protected $fillable = [
         'pengajuan_id',
-        'petugas_lab_id',
+        'petugas_lapangan_id',
         'latitude',
         'longitude',
         'tanggal_uji',
@@ -29,8 +29,8 @@ class SoilLocationModel extends Model
         return $this->belongsTo(SoilTestModel::class, 'pengajuan_id');
     }
 
-    public function petugasLab(): BelongsTo
+    public function petugasLapangan(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'petugas_lab_id');
+        return $this->belongsTo(User::class, 'petugas_lapangan_id');
     }
 }

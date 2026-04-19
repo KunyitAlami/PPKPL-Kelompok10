@@ -26,4 +26,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function lokasi()
+    {
+        return $this->hasMany(SoilLocationModel::class, 'petugas_lapangan_id');
+    }
 }
