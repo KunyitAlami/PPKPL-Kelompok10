@@ -48,7 +48,7 @@ Sebagai Teknisi Lapangan, saya ingin menginput nilai daya dukung tanah hasil uji
   - **MOD** `app/Models/SoilTest.php` — Added `hasOne(SoilResult::class)` relationship
 
 • **Commit Message:** feat(soil-test): implement US 1.3 soil bearing capacity input for technicians
-    - Add StoreSoilBearingCapacityAction for technical data storage
-    - Implement StoreSoilResultRequest for numerical validation
-    - Add SoilResult model and migration with decimal precision
-    - Add blade view for test result entry
+- Add StoreSoilBearingCapacityAction for technical data storage
+- Implement StoreSoilResultRequest for numerical validation
+- Add SoilResult model and migration with decimal precision
+- Add blade view for test result entry
