@@ -43,7 +43,7 @@ Sebagai Kontraktor, saya ingin mengajukan permintaan jadwal uji tanah dengan men
   - **MOD** `routes/web.php` — Resource routes for PengajuanController
 
 • **Commit Message:** feat(soil-test): implement US 1.1 soil test schedule request for contractors
-    - Create PengajuanController for managing soil test requests
-    - Implement SoilTestModel with project and user relationships
-    - Add validation for project selection and test type
-    - Setup initial status 'Menunggu Penjadwalan Lab'
+- Create PengajuanController for managing soil test requests
+- Implement SoilTestModel with project and user relationships
+- Add validation for project selection and test type
+- Setup initial status 'Menunggu Penjadwalan Lab'
