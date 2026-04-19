@@ -47,7 +47,7 @@ Sebagai Petugas Lab, saya ingin mengunggah sertifikat hasil pengujian tanah agar
   - **MOD** `app/Models/SoilTest.php` — Added file_path and status update logic
 
 • **Commit Message:** feat(soil-test): implement US 1.4 certificate upload with MinIO integration
-    - Add UploadSoilCertificateAction for S3 object storage
-    - Implement StoreCertificateRequest for PDF validation
-    - Configure MinIO storage driver in filesystems.php
-    - Add blade view for certificate management
+- Add UploadSoilCertificateAction for S3 object storage
+- Implement StoreCertificateRequest for PDF validation
+- Configure MinIO storage driver in filesystems.php
+- Add blade view for certificate management
